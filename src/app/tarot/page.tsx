@@ -1,0 +1,195 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { TAROT_CARDS, type TarotCard, type TarotSuit } from "@/data/tarotData";
+
+const SUIT_LABEL: Record<TarotSuit, string> = {
+  wands: "🔥 Wands",
+  cups: "💧 Cups",
+  swords: "⚡ Swords",
+  pentacles: "🌿 Pentacles",
+};
+
+const POSITIONS = [
+  { label: "Past", sublabel: "What led you here" },
+  { label: "Present", sublabel: "Where you stand now" },
+  { label: "Future", sublabel: "Where you are headed" },
+];
+
+export default function TarotPage() {
+  const [drawn, setDrawn] = useState(false);
+  const [selectedCards, setSelectedCards] = useState<TarotCard[]>([]);
+
+  const selectedIds = new Set(selectedCards.map((c) => c.id));
+
+  function handleDraw() {
+    const shuffled = [...TAROT_CARDS].sort(() => Math.random() - 0.5);
+    setSelectedCards(shuffled.slice(0, 3));
+    setDrawn(true);
+    setTimeout(() => {
+      document.getElementById("tarot-reading")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 700);
+  }
+
+  function handleReset() {
+    setDrawn(false);
+    setSelectedCards([]);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  return (
+    <main className="min-h-screen bg-gradient-to-b from-violet-50 via-purple-50 to-white px-4 py-8 sm:px-8 sm:py-10">
+      <div className="mx-auto w-full max-w-4xl">
+        {/* Header */}
+        <Link
+          href="/"
+          className="text-xs font-semibold text-violet-400 transition hover:text-violet-600"
+        >
+          ← Back
+        </Link>
+        <p className="mt-4 text-xs font-semibold uppercase tracking-[0.24em] text-violet-500">
+          VIPI Tarot
+        </p>
+        <h1 className="mt-2 text-2xl font-bold text-slate-900 sm:text-4xl">
+          {drawn ? "Your reading is ready" : "The deck awaits"}
+        </h1>
+        <p className="mt-2 text-sm leading-relaxed text-slate-500 sm:text-base">
+          {drawn
+            ? "Three cards have been drawn. Scroll down to read your message."
+            : "All 78 cards lie before you, face down. When you are ready, draw three."}
+        </p>
+
+        {/* Action button */}
+        <div className="mt-6">
+          {!drawn ? (
+            <button
+              onClick={handleDraw}
+              className="rounded-2xl bg-violet-600 px-7 py-3 text-sm font-semibold text-white shadow-md shadow-violet-200 transition hover:bg-violet-700 active:scale-95"
+            >
+              Select 3 Cards
+            </button>
+          ) : (
+            <button
+              onClick={handleReset}
+              className="rounded-2xl border border-violet-200 px-7 py-3 text-sm font-semibold text-violet-600 transition hover:bg-violet-50 active:scale-95"
+            >
+              Draw again
+            </button>
+          )}
+        </div>
+
+        {/* Card grid — all 78 cards */}
+        <div className="tarot-grid mt-8">
+          {TAROT_CARDS.map((card) => {
+            const isSelected = selectedIds.has(card.id);
+            const isFlipped = drawn && isSelected;
+            const isDimmed = drawn && !isSelected;
+
+            return (
+              <div
+                key={card.id}
+                aria-label={isFlipped ? card.name : "Face-down tarot card"}
+                style={{ perspective: "600px" }}
+              >
+                <div
+                  className={`tarot-card-inner${isFlipped ? " flipped" : ""}`}
+                >
+                  {/* Card back */}
+                  <div
+                    className={`tarot-card-back rounded-lg transition-opacity duration-500${isDimmed ? " opacity-30" : ""}${!drawn || isSelected ? " ring-0" : ""}${isSelected ? " ring-2 ring-amber-400 ring-offset-1" : ""}`}
+                  >
+                    <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-violet-900 via-indigo-900 to-violet-950 flex items-center justify-center overflow-hidden">
+                      {/* decorative diamond pattern */}
+                      <div className="absolute inset-0 opacity-10"
+                        style={{
+                          backgroundImage:
+                            "repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%)",
+                          backgroundSize: "8px 8px",
+                        }}
+                      />
+                      <span className="relative text-violet-300 text-[9px] select-none">✦</span>
+                    </div>
+                  </div>
+
+                  {/* Card front */}
+                  <div className="tarot-card-front rounded-lg border border-violet-200 bg-white flex flex-col items-center justify-center gap-0.5 p-0.5">
+                    <p className="text-[5.5px] font-bold text-center text-slate-900 leading-tight line-clamp-3 px-0.5">
+                      {card.name}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Reading section */}
+        {drawn && (
+          <section
+            id="tarot-reading"
+            className="mt-14 scroll-mt-8 space-y-5"
+          >
+            <div>
+              <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
+                Your three-card reading
+              </h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Past · Present · Future
+              </p>
+            </div>
+
+            {POSITIONS.map((pos, i) => {
+              const card = selectedCards[i];
+              if (!card) return null;
+              return (
+                <article
+                  key={card.id}
+                  className="rounded-2xl border border-violet-100 bg-white/90 p-5 shadow-sm shadow-violet-100/30 sm:p-6"
+                >
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-violet-400">
+                    {pos.label} · {pos.sublabel}
+                  </p>
+                  <h3 className="mt-1.5 text-lg font-bold text-slate-900 sm:text-xl">
+                    {card.name}
+                  </h3>
+
+                  {/* Keywords */}
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {card.keywords.map((kw) => (
+                      <span
+                        key={kw}
+                        className="rounded-full bg-violet-50 px-2.5 py-0.5 text-xs font-medium text-violet-600"
+                      >
+                        {kw}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Meaning */}
+                  <p className="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">
+                    {card.meaning}
+                  </p>
+
+                  {/* Arcana label */}
+                  <p className="mt-3 text-xs text-slate-400">
+                    {card.arcana === "major"
+                      ? "⭐ Major Arcana"
+                      : `${SUIT_LABEL[card.suit!]} · Minor Arcana`}
+                  </p>
+                </article>
+              );
+            })}
+
+            <p className="pt-2 text-xs text-slate-400">
+              Entertainment-only content for prototype validation.
+            </p>
+          </section>
+        )}
+      </div>
+    </main>
+  );
+}

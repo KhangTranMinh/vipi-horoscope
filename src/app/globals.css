@@ -24,3 +24,47 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ── Tarot card grid ────────────────────────────────────────────────────── */
+.tarot-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+}
+
+@media (min-width: 480px) {
+  .tarot-grid { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+}
+
+@media (min-width: 768px) {
+  .tarot-grid { grid-template-columns: repeat(11, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  .tarot-grid { grid-template-columns: repeat(13, minmax(0, 1fr)); }
+}
+
+/* ── Tarot card flip 3-D ────────────────────────────────────────────────── */
+.tarot-card-inner {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  transform-style: preserve-3d;
+  transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tarot-card-inner.flipped {
+  transform: rotateY(180deg);
+}
+
+.tarot-card-back,
+.tarot-card-front {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.tarot-card-front {
+  transform: rotateY(180deg);
+}
