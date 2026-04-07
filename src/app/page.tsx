@@ -1,12 +1,24 @@
+"use client";
+
 import Link from "next/link";
-import { localized } from "@/locales";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useLocale } from "@/locales/useLocale";
 
 export default function Home() {
-  const { launcher } = localized.ui;
+  const { locale, setLocale, dictionary } = useLocale();
+  const { launcher, common } = dictionary.ui;
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-amber-50 via-orange-50 to-white px-4 py-16 sm:px-8 sm:py-24">
       <div className="mx-auto w-full max-w-xl">
+        <div className="mb-4 flex justify-end">
+          <LanguageSwitcher
+            locale={locale}
+            onChange={setLocale}
+            label={common.language}
+            labels={{ en: common.languageEn, vi: common.languageVi }}
+          />
+        </div>
         <p className="text-center text-xs font-semibold uppercase tracking-[0.28em] text-orange-400">
           {launcher.brand}
         </p>

@@ -22,6 +22,9 @@ export const ui = {
   common: {
     back: "<- Back",
     entertainment: "Entertainment-only content for prototype validation.",
+    language: "Language",
+    languageEn: "English",
+    languageVi: "Vietnamese",
   },
   horoscope: {
     brand: "VaiPai Zodiac Weekly",

@@ -19,6 +19,9 @@ export const ui = {
   common: {
     back: "<- Quay lai",
     entertainment: "Noi dung chi mang tinh giai tri cho muc dich prototype.",
+    language: "Ngon ngu",
+    languageEn: "Tieng Anh",
+    languageVi: "Tieng Viet",
   },
   horoscope: {
     brand: "VaiPai Zodiac Weekly",

@@ -2,22 +2,28 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { TAROT_CARDS, type TarotCard, type TarotSuit } from "@/data/tarotData";
-import { localized } from "@/locales";
+import { getTarotCards, type TarotSuit } from "@/data/tarotData";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useLocale } from "@/locales/useLocale";
 
 export default function TarotPage() {
-  const { tarot, common } = localized.ui;
+  const { locale, setLocale, dictionary } = useLocale();
+  const { tarot, common } = dictionary.ui;
   const SUIT_LABEL: Record<TarotSuit, string> = tarot.suits;
   const POSITIONS = tarot.positions;
+  const tarotCards = getTarotCards(locale);
 
   const [drawn, setDrawn] = useState(false);
-  const [selectedCards, setSelectedCards] = useState<TarotCard[]>([]);
+  const [selectedCardIds, setSelectedCardIds] = useState<number[]>([]);
+  const selectedCards = selectedCardIds
+    .map((id) => tarotCards.find((card) => card.id === id))
+    .filter((card): card is (typeof tarotCards)[number] => Boolean(card));
 
-  const selectedIds = new Set(selectedCards.map((c) => c.id));
+  const selectedIds = new Set(selectedCardIds);
 
   function handleDraw() {
-    const shuffled = [...TAROT_CARDS].sort(() => Math.random() - 0.5);
-    setSelectedCards(shuffled.slice(0, 3));
+    const shuffled = [...tarotCards].sort(() => Math.random() - 0.5);
+    setSelectedCardIds(shuffled.slice(0, 3).map((card) => card.id));
     setDrawn(true);
     setTimeout(() => {
       document.getElementById("tarot-reading")?.scrollIntoView({
@@ -29,13 +35,21 @@ export default function TarotPage() {
 
   function handleReset() {
     setDrawn(false);
-    setSelectedCards([]);
+    setSelectedCardIds([]);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-violet-50 via-purple-50 to-white px-4 py-8 sm:px-8 sm:py-10">
       <div className="mx-auto w-full max-w-4xl">
+        <div className="mb-3 flex justify-end">
+          <LanguageSwitcher
+            locale={locale}
+            onChange={setLocale}
+            label={common.language}
+            labels={{ en: common.languageEn, vi: common.languageVi }}
+          />
+        </div>
         {/* Header */}
         <Link
           href="/"
@@ -76,7 +90,7 @@ export default function TarotPage() {
 
         {/* Card grid — all 78 cards */}
         <div className="tarot-grid mt-8">
-          {TAROT_CARDS.map((card) => {
+          {tarotCards.map((card) => {
             const isSelected = selectedIds.has(card.id);
             const isFlipped = drawn && isSelected;
             const isDimmed = drawn && !isSelected;

@@ -7,13 +7,15 @@ import { ui as viUi } from "./vi/ui";
 
 export type SupportedLocale = "en" | "vi";
 
+export const SUPPORTED_LOCALES: SupportedLocale[] = ["en", "vi"];
+
 function resolveLocale(): SupportedLocale {
   const configured = process.env.NEXT_PUBLIC_LOCALE?.toLowerCase();
   if (configured === "vi") return "vi";
   return "en";
 }
 
-export const locale = resolveLocale();
+export const DEFAULT_LOCALE = resolveLocale();
 
 const localeMap = {
   en: {
@@ -28,4 +30,12 @@ const localeMap = {
   },
 } as const;
 
-export const localized = localeMap[locale];
+export function isSupportedLocale(value: string): value is SupportedLocale {
+  return SUPPORTED_LOCALES.includes(value as SupportedLocale);
+}
+
+export function getLocalized(locale: SupportedLocale) {
+  return localeMap[locale];
+}
+
+export const localized = getLocalized(DEFAULT_LOCALE);
