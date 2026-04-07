@@ -61,7 +61,7 @@ export const ui = {
     autoChooseRemaining: "Tarot chooses the rest",
     viewResult: "View result",
     chooseCardPrompt: "Choose a card for slot",
-    selectedCards: "Selected cards",
+    selectedCards: "List of cards",
     viewAllResults: "View all",
     viewSingleResult: "View one",
     faceDownAria: "Face-down tarot card",

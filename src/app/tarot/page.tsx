@@ -20,7 +20,6 @@ export default function TarotPage() {
   const [questionId, setQuestionId] = useState<string | null>(null);
   const [customQuestion, setCustomQuestion] = useState("");
   const [selectedCardIds, setSelectedCardIds] = useState<(number | null)[]>([]);
-  const [activeSlotIndex, setActiveSlotIndex] = useState<number | null>(null);
   const [activeResultIndex, setActiveResultIndex] = useState<number | null>(null);
 
   const selectedCards = selectedCardIds
@@ -41,10 +40,16 @@ export default function TarotPage() {
   const SUIT_LABEL = tarot.suits as Record<TarotSuit, string>;
   const isAllCardsChosen =
     selectedCardIds.length > 0 && selectedCardIds.every((id) => id !== null);
+  const nextSlotIndex = selectedCardIds.findIndex((id) => id === null);
+  const selectedSet = new Set(
+    selectedCardIds.filter((id): id is number => id !== null),
+  );
+  const remainingCards = tarotCards.filter((card) => !selectedSet.has(card.id));
   const selectedQuestion =
     customQuestion.trim() ||
     tarot.predefinedQuestions.find((q) => q.id === questionId)?.title ||
     "";
+  const backLabel = common.back.replace(/^<-\s*/, "");
 
   function selectSpreadType(id: string) {
     setSpreadTypeId(id);
@@ -62,7 +67,6 @@ export default function TarotPage() {
     if (!selectedQuestion) return;
     const count = currentDepth?.cardCount ?? 3;
     setSelectedCardIds(Array.from({ length: count }, () => null));
-    setActiveSlotIndex(0);
     setStep(4);
   }
 
@@ -85,21 +89,19 @@ export default function TarotPage() {
   }
 
   function chooseCardForSlot(cardId: number) {
-    if (activeSlotIndex === null) return;
+    if (nextSlotIndex === -1 || selectedSet.has(cardId)) return;
     setSelectedCardIds((prev) => {
       const next = [...prev];
-      const existingIndex = next.findIndex((id) => id === cardId);
-      if (existingIndex !== -1 && existingIndex !== activeSlotIndex) {
-        next[existingIndex] = next[activeSlotIndex];
-      }
-      next[activeSlotIndex] = cardId;
+      const targetIndex = next.findIndex((id) => id === null);
+      if (targetIndex === -1) return next;
+      next[targetIndex] = cardId;
       return next;
     });
   }
 
   function goToResultStep() {
     if (!isAllCardsChosen) return;
-    setActiveResultIndex(null);
+    setActiveResultIndex(0);
     setStep(5);
   }
 
@@ -110,7 +112,6 @@ export default function TarotPage() {
     setQuestionId(null);
     setCustomQuestion("");
     setSelectedCardIds([]);
-    setActiveSlotIndex(null);
     setActiveResultIndex(null);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -122,9 +123,19 @@ export default function TarotPage() {
         <div className="mb-3 flex items-center justify-between">
           <Link
             href="/"
-            className="text-xs font-semibold text-violet-400 transition hover:text-violet-600"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-violet-400 transition hover:text-violet-600"
           >
-            {common.back}
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              className="h-3.5 w-3.5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            {backLabel}
           </Link>
           <LanguageSwitcher
             locale={locale}
@@ -192,9 +203,19 @@ export default function TarotPage() {
           <div className="mt-6">
             <button
               onClick={() => setStep(1)}
-              className="mb-4 text-xs font-semibold text-violet-400 transition hover:text-violet-600"
+              className="mb-4 inline-flex items-center gap-1 text-xs font-semibold text-violet-400 transition hover:text-violet-600"
             >
-              ← {tarot.stepBack}
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                className="h-3.5 w-3.5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              {tarot.stepBack}
             </button>
             <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">
               {tarot.step2Title}
@@ -224,9 +245,19 @@ export default function TarotPage() {
           <div className="mt-6">
             <button
               onClick={() => setStep(2)}
-              className="mb-4 text-xs font-semibold text-violet-400 transition hover:text-violet-600"
+              className="mb-4 inline-flex items-center gap-1 text-xs font-semibold text-violet-400 transition hover:text-violet-600"
             >
-              ← {tarot.stepBack}
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                className="h-3.5 w-3.5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              {tarot.stepBack}
             </button>
             <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">
               {tarot.step3Title}
@@ -292,9 +323,19 @@ export default function TarotPage() {
           <div className="mt-6">
             <button
               onClick={() => setStep(3)}
-              className="mb-4 text-xs font-semibold text-violet-400 transition hover:text-violet-600"
+              className="mb-4 inline-flex items-center gap-1 text-xs font-semibold text-violet-400 transition hover:text-violet-600"
             >
-              ← {tarot.stepBack}
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                className="h-3.5 w-3.5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              {tarot.stepBack}
             </button>
             <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">
               {tarot.step4Title}
@@ -305,34 +346,44 @@ export default function TarotPage() {
 
             <div className="mt-6 flex flex-wrap gap-3">
               {selectedCardIds.map((cardId, index) => {
-                const card = tarotCards.find((item) => item.id === cardId);
-                const isActive = activeSlotIndex === index;
+                const isActive = nextSlotIndex === index;
+                const isFilled = cardId !== null;
                 return (
-                  <button
+                  <div
                     key={index}
-                    onClick={() => setActiveSlotIndex(index)}
-                    className={`flex h-28 w-24 flex-col items-center justify-center rounded-xl border text-center transition ${
+                    className={`relative flex h-40 w-28 flex-col items-center justify-center rounded-2xl border-2 text-center transition ${
                       isActive
-                        ? "border-violet-500 bg-violet-50"
-                        : "border-violet-200 bg-white"
+                        ? "scale-[1.04] border-amber-400 shadow-lg shadow-amber-200/60 ring-4 ring-amber-100"
+                        : isFilled
+                          ? "border-violet-500 shadow-md shadow-violet-200/40"
+                          : "border-violet-200"
                     }`}
                   >
-                    <span className="text-[10px] font-semibold text-violet-400">
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-violet-900 via-indigo-900 to-violet-950" />
+                    <div
+                      className="absolute inset-0 rounded-2xl opacity-10"
+                      style={{
+                        backgroundImage:
+                          "repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%)",
+                        backgroundSize: "8px 8px",
+                      }}
+                    />
+                    <span className="relative text-[10px] font-semibold text-violet-200">
                       #{index + 1}
                     </span>
-                    {card ? (
-                      <span className="mt-1 px-1 text-[11px] font-semibold leading-tight text-slate-800">
-                        {card.name}
-                      </span>
-                    ) : (
-                      <span className="mt-1 px-2 text-[10px] leading-tight text-slate-400">
-                        {tarot.chooseCardPrompt} {index + 1}
-                      </span>
-                    )}
-                  </button>
+                    <span className="relative mt-1 text-[10px] text-violet-300">
+                      {cardId !== null ? "✓" : "✦"}
+                    </span>
+                  </div>
                 );
               })}
             </div>
+
+            {nextSlotIndex !== -1 && (
+              <p className="mt-3 text-xs text-slate-500">
+                {tarot.chooseCardPrompt} {nextSlotIndex + 1}
+              </p>
+            )}
 
             <div className="mt-5 flex flex-wrap gap-3">
               <button
@@ -354,22 +405,35 @@ export default function TarotPage() {
               <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-violet-400">
                 {tarot.selectedCards}
               </p>
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
+              <div className="grid grid-cols-3 gap-2 sm:grid-cols-5 md:grid-cols-6">
                 {tarotCards.map((card) => {
-                  const selectedIndex = selectedCardIds.findIndex((id) => id === card.id);
-                  const isPicked = selectedIndex !== -1;
+                  const isSelected = selectedSet.has(card.id);
                   return (
                     <button
                       key={card.id}
                       onClick={() => chooseCardForSlot(card.id)}
-                      disabled={activeSlotIndex === null}
-                      className={`rounded-xl border px-2 py-2 text-left text-xs transition ${
-                        isPicked
-                          ? "border-violet-300 bg-violet-50 text-violet-700"
-                          : "border-violet-100 bg-white text-slate-600 hover:border-violet-300"
-                      } ${activeSlotIndex === null ? "cursor-not-allowed opacity-40" : ""}`}
+                      disabled={nextSlotIndex === -1 || isSelected}
+                      aria-label={tarot.faceDownAria}
+                      className={`relative h-40 w-28 rounded-2xl border-2 transition disabled:cursor-not-allowed ${
+                        isSelected
+                          ? "border-violet-500 opacity-45"
+                          : "border-violet-200 hover:border-amber-400 hover:shadow-md hover:shadow-amber-100/60"
+                      } ${nextSlotIndex === -1 ? "opacity-40" : ""}`}
                     >
-                      {card.name}
+                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-violet-900 via-indigo-900 to-violet-950" />
+                      <div
+                        className="absolute inset-0 rounded-2xl opacity-10"
+                        style={{
+                          backgroundImage:
+                            "repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%)",
+                          backgroundSize: "8px 8px",
+                        }}
+                      />
+                      <div className="absolute inset-x-3 top-3 h-px bg-white/25" />
+                      <div className="absolute inset-x-3 bottom-3 h-px bg-white/20" />
+                      <span className="relative text-violet-300 text-sm">
+                        {isSelected ? "✓" : "✦"}
+                      </span>
                     </button>
                   );
                 })}
@@ -406,16 +470,27 @@ export default function TarotPage() {
                 <button
                   key={card.id}
                   onClick={() => setActiveResultIndex(i)}
-                  className={`flex w-[76px] flex-shrink-0 flex-col items-center rounded-xl border bg-white p-2 shadow-sm shadow-violet-100/40 transition ${
+                  className={`relative flex h-40 w-28 flex-shrink-0 flex-col items-center justify-end rounded-2xl border-2 p-3 text-center shadow-sm transition ${
                     activeResultIndex === i
-                      ? "border-violet-500"
-                      : "border-violet-200 hover:border-violet-300"
+                      ? "border-amber-400 shadow-lg shadow-amber-200/60 ring-4 ring-amber-100"
+                      : "border-violet-200 shadow-violet-100/40 hover:border-violet-300"
                   }`}
                 >
-                  <div className="flex h-10 w-full items-center justify-center rounded-lg bg-gradient-to-br from-violet-700 to-indigo-900 text-sm font-bold text-white">
+                  <div className="absolute inset-2 rounded-xl bg-gradient-to-br from-violet-900 via-indigo-900 to-violet-950" />
+                  <div
+                    className="absolute inset-2 rounded-xl opacity-10"
+                    style={{
+                      backgroundImage:
+                        "repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%)",
+                      backgroundSize: "8px 8px",
+                    }}
+                  />
+                  <div className="absolute inset-x-5 top-6 h-px bg-white/25" />
+                  <div className="absolute inset-x-5 bottom-10 h-px bg-white/20" />
+                  <div className="relative mb-2 flex h-7 w-7 items-center justify-center rounded-full border border-white/25 bg-white/10 text-[10px] font-bold text-white backdrop-blur-sm">
                     {i + 1}
                   </div>
-                  <p className="mt-1.5 line-clamp-3 text-center text-[9px] font-semibold leading-tight text-slate-700">
+                  <p className="relative line-clamp-3 text-center text-[10px] font-semibold leading-tight text-white">
                     {card.name}
                   </p>
                 </button>
@@ -423,6 +498,18 @@ export default function TarotPage() {
             </div>
 
             <div className="mt-4 flex gap-2">
+              <button
+                onClick={() =>
+                  setActiveResultIndex((prev) => (prev === null ? 0 : prev))
+                }
+                className={`rounded-full px-4 py-1.5 text-xs font-semibold transition ${
+                  activeResultIndex !== null
+                    ? "bg-violet-600 text-white"
+                    : "bg-violet-100 text-violet-700 hover:bg-violet-200"
+                }`}
+              >
+                {tarot.viewSingleResult}
+              </button>
               <button
                 onClick={() => setActiveResultIndex(null)}
                 className={`rounded-full px-4 py-1.5 text-xs font-semibold transition ${
@@ -433,9 +520,6 @@ export default function TarotPage() {
               >
                 {tarot.viewAllResults}
               </button>
-              <span className="rounded-full bg-slate-100 px-3 py-1.5 text-xs text-slate-500">
-                {tarot.viewSingleResult}
-              </span>
             </div>
 
             {/* Card-by-card reading */}

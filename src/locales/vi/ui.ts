@@ -58,7 +58,7 @@ export const ui = {
     autoChooseRemaining: "Tarot chọn phần còn lại",
     viewResult: "Xem kết quả",
     chooseCardPrompt: "Chọn lá bài cho vị trí",
-    selectedCards: "Các lá đã chọn",
+    selectedCards: "Danh sách lá bài",
     viewAllResults: "Xem tất cả",
     viewSingleResult: "Xem từng lá",
     faceDownAria: "Lá bài tarot đang úp",
