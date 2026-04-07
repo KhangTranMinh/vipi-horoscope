@@ -3,21 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import { TAROT_CARDS, type TarotCard, type TarotSuit } from "@/data/tarotData";
-
-const SUIT_LABEL: Record<TarotSuit, string> = {
-  wands: "🔥 Wands",
-  cups: "💧 Cups",
-  swords: "⚡ Swords",
-  pentacles: "🌿 Pentacles",
-};
-
-const POSITIONS = [
-  { label: "Past", sublabel: "What led you here" },
-  { label: "Present", sublabel: "Where you stand now" },
-  { label: "Future", sublabel: "Where you are headed" },
-];
+import { localized } from "@/locales";
 
 export default function TarotPage() {
+  const { tarot, common } = localized.ui;
+  const SUIT_LABEL: Record<TarotSuit, string> = tarot.suits;
+  const POSITIONS = tarot.positions;
+
   const [drawn, setDrawn] = useState(false);
   const [selectedCards, setSelectedCards] = useState<TarotCard[]>([]);
 
@@ -49,18 +41,18 @@ export default function TarotPage() {
           href="/"
           className="text-xs font-semibold text-violet-400 transition hover:text-violet-600"
         >
-          ← Back
+          {common.back}
         </Link>
         <p className="mt-4 text-xs font-semibold uppercase tracking-[0.24em] text-violet-500">
-          VIPI Tarot
+          {tarot.brand}
         </p>
         <h1 className="mt-2 text-2xl font-bold text-slate-900 sm:text-4xl">
-          {drawn ? "Your reading is ready" : "The deck awaits"}
+          {drawn ? tarot.titleReady : tarot.titleWaiting}
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-slate-500 sm:text-base">
           {drawn
-            ? "Three cards have been drawn. Scroll down to read your message."
-            : "All 78 cards lie before you, face down. When you are ready, draw three."}
+            ? tarot.descriptionReady
+            : tarot.descriptionWaiting}
         </p>
 
         {/* Action button */}
@@ -70,14 +62,14 @@ export default function TarotPage() {
               onClick={handleDraw}
               className="rounded-2xl bg-violet-600 px-7 py-3 text-sm font-semibold text-white shadow-md shadow-violet-200 transition hover:bg-violet-700 active:scale-95"
             >
-              Select 3 Cards
+              {tarot.selectThree}
             </button>
           ) : (
             <button
               onClick={handleReset}
               className="rounded-2xl border border-violet-200 px-7 py-3 text-sm font-semibold text-violet-600 transition hover:bg-violet-50 active:scale-95"
             >
-              Draw again
+              {tarot.drawAgain}
             </button>
           )}
         </div>
@@ -92,7 +84,7 @@ export default function TarotPage() {
             return (
               <div
                 key={card.id}
-                aria-label={isFlipped ? card.name : "Face-down tarot card"}
+                aria-label={isFlipped ? card.name : tarot.faceDownAria}
                 style={{ perspective: "600px" }}
               >
                 <div
@@ -135,10 +127,10 @@ export default function TarotPage() {
           >
             <div>
               <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
-                Your three-card reading
+                {tarot.readingTitle}
               </h2>
               <p className="mt-1 text-sm text-slate-500">
-                Past · Present · Future
+                {tarot.readingSubtitle}
               </p>
             </div>
 
@@ -177,15 +169,15 @@ export default function TarotPage() {
                   {/* Arcana label */}
                   <p className="mt-3 text-xs text-slate-400">
                     {card.arcana === "major"
-                      ? "⭐ Major Arcana"
-                      : `${SUIT_LABEL[card.suit!]} · Minor Arcana`}
+                      ? `⭐ ${tarot.majorArcana}`
+                      : `${SUIT_LABEL[card.suit!]} · ${tarot.minorArcana}`}
                   </p>
                 </article>
               );
             })}
 
             <p className="pt-2 text-xs text-slate-400">
-              Entertainment-only content for prototype validation.
+              {common.entertainment}
             </p>
           </section>
         )}

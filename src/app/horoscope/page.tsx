@@ -8,14 +8,16 @@ import {
   type ZodiacSign,
 } from "@/data/horoscopeMock";
 import { getWeeklyHoroscope } from "@/services/horoscopeService";
+import { localized } from "@/locales";
 
 export default function HoroscopePage() {
+  const { horoscope, common } = localized.ui;
   const [sign, setSign] = useState<ZodiacSign>("aries");
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<WeeklyHoroscope | null>(null);
 
   const selectedSignLabel = useMemo(
-    () => ZODIAC_SIGNS.find((item) => item.value === sign)?.label ?? "Aries",
+    () => ZODIAC_SIGNS.find((item) => item.value === sign)?.label ?? ZODIAC_SIGNS[0].label,
     [sign],
   );
 
@@ -36,22 +38,21 @@ export default function HoroscopePage() {
           href="/"
           className="text-xs font-semibold text-orange-400 transition hover:text-orange-600"
         >
-          ← Back
+          {common.back}
         </Link>
         <p className="mt-4 text-xs font-semibold uppercase tracking-[0.24em] text-orange-500">
-          VaiPai Zodiac Weekly
+          {horoscope.brand}
         </p>
         <h1 className="mt-2 text-2xl font-bold text-slate-900 sm:text-4xl">
-          Pick your sign, check your week
+          {horoscope.title}
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">
-          This first release uses mock data so we can validate layout, flow, and
-          responsiveness before integrating external APIs.
+          {horoscope.description}
         </p>
 
         <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto]">
           <label htmlFor="zodiac" className="sr-only">
-            Zodiac sign
+            {horoscope.zodiacLabel}
           </label>
           <select
             id="zodiac"
@@ -72,7 +73,7 @@ export default function HoroscopePage() {
             disabled={loading}
             className="rounded-2xl bg-orange-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-70"
           >
-            {loading ? "Loading..." : "Get this week"}
+            {loading ? horoscope.loading : horoscope.getWeek}
           </button>
         </div>
 
@@ -83,7 +84,7 @@ export default function HoroscopePage() {
                 {selectedSignLabel}
               </h2>
               <p className="mt-2 text-sm text-slate-500 sm:text-base">
-                Select your sign and tap &quot;Get this week&quot; to see your horoscope.
+                {horoscope.emptyPrompt}
               </p>
             </div>
           ) : (
@@ -92,24 +93,24 @@ export default function HoroscopePage() {
                 {selectedSignLabel}
               </h2>
               <p className="mt-1 text-xs text-slate-500">
-                Week of {data.weekStart}
+                {horoscope.weekOf} {data.weekStart}
               </p>
 
               <div className="mt-4 space-y-3 text-sm leading-relaxed text-slate-700 sm:text-base">
                 <p>
-                  <span className="font-semibold text-slate-900">Summary:</span>{" "}
+                  <span className="font-semibold text-slate-900">{horoscope.summary}</span>{" "}
                   {data.summary}
                 </p>
                 <p>
-                  <span className="font-semibold text-slate-900">Love:</span>{" "}
+                  <span className="font-semibold text-slate-900">{horoscope.love}</span>{" "}
                   {data.love}
                 </p>
                 <p>
-                  <span className="font-semibold text-slate-900">Career:</span>{" "}
+                  <span className="font-semibold text-slate-900">{horoscope.career}</span>{" "}
                   {data.career}
                 </p>
                 <p>
-                  <span className="font-semibold text-slate-900">Health:</span>{" "}
+                  <span className="font-semibold text-slate-900">{horoscope.health}</span>{" "}
                   {data.health}
                 </p>
               </div>
@@ -118,7 +119,7 @@ export default function HoroscopePage() {
         </section>
 
         <p className="mt-4 text-xs text-slate-500">
-          Entertainment-only content for prototype validation.
+          {common.entertainment}
         </p>
       </div>
     </main>
