@@ -33,16 +33,16 @@ export function BackButton({ label, href, onClick, className = "", icon }: Props
   if (href) {
     return (
       <Link href={href} className={cls} aria-label={label}>
-        {icon ?? <ArrowIcon />}
-        <span>{label}</span>
+        <span className="inline-flex items-center">{icon ?? <ArrowIcon />}</span>
+        <span className="leading-none">{label}</span>
       </Link>
     );
   }
 
   return (
     <button type="button" onClick={onClick} className={cls} aria-label={label}>
-      {icon ?? <ArrowIcon />}
-      <span>{label}</span>
+      <span className="inline-flex items-center">{icon ?? <ArrowIcon />}</span>
+      <span className="leading-none">{label}</span>
     </button>
   );
 }
