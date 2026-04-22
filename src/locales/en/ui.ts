@@ -12,19 +12,20 @@ export const ui = {
     horoscopeTitle: "Horoscope",
     horoscopeDescription:
       "Explore your weekly zodiac reading across love, career, and health.",
-    horoscopeCta: "View reading ->",
+    horoscopeCta: "View reading",
     tarotTitle: "Tarot",
     tarotDescription:
       "Shuffle the full 78-card deck and draw three cards to uncover hidden truths.",
-    tarotCta: "Draw cards ->",
+    tarotCta: "Draw cards",
     footer: "Entertainment only · prototype v0.1",
   },
   common: {
-    back: "<- Back",
+    back: "Back",
     entertainment: "Entertainment-only content for prototype validation.",
     language: "Language",
     languageEn: "English",
     languageVi: "Vietnamese",
+    home: "Home",
   },
   horoscope: {
     brand: "VaiPai Zodiac Weekly",

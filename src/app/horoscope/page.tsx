@@ -8,7 +8,7 @@ import {
   type ZodiacSign,
 } from "@/data/horoscopeMock";
 import { getWeeklyHoroscope } from "@/services/horoscopeService";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { PageHeader } from "@/components/PageHeader";
 import { useLocale } from "@/locales/useLocale";
 
 export default function HoroscopePage() {
@@ -37,20 +37,20 @@ export default function HoroscopePage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-amber-50 via-orange-50 to-white px-4 py-8 sm:px-8 sm:py-10">
       <div className="mx-auto w-full max-w-3xl rounded-3xl border border-orange-100 bg-white/90 p-5 shadow-lg shadow-orange-100/40 backdrop-blur sm:p-8">
-        <div className="mb-3 flex justify-end">
-          <LanguageSwitcher
-            locale={locale}
-            onChange={setLocale}
-            label={common.language}
-            labels={{ en: common.languageEn, vi: common.languageVi }}
-          />
-        </div>
-        <Link
-          href="/"
-          className="text-xs font-semibold text-orange-400 transition hover:text-orange-600"
-        >
-          {common.back}
-        </Link>
+        <PageHeader
+          backLabel={common.home}
+          backHref="/"
+          backClassName="inline-flex items-center gap-2 text-xs font-semibold text-orange-400 transition hover:text-orange-600"
+          backIcon={
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path d="M3 10.5L12 4l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10.5z" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          }
+          locale={locale}
+          onChange={setLocale}
+          label={common.language}
+          labels={{ en: common.languageEn, vi: common.languageVi }}
+        />
         <p className="mt-4 text-xs font-semibold uppercase tracking-[0.24em] text-orange-500">
           {horoscope.brand}
         </p>

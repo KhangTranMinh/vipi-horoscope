@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { getTarotCards, type TarotSuit } from "@/data/tarotData";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { PageHeader } from "@/components/PageHeader";
 import { StepDrawCards } from "@/components/tarot/StepDrawCards";
 import { StepQuestion } from "@/components/tarot/StepQuestion";
 import { StepReading } from "@/components/tarot/StepReading";
@@ -62,7 +62,7 @@ export default function TarotPage() {
     customQuestion.trim() ||
     predefinedQuestions.find((q) => q.id === questionId)?.title ||
     "";
-  const backLabel = common.back.replace(/^<-\s*/, "");
+  const backLabel = common.home;
 
   function selectSpreadType(id: string) {
     setSpreadTypeId(id);
@@ -132,15 +132,20 @@ export default function TarotPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-violet-50 via-purple-50 to-white px-4 py-8 sm:px-8 sm:py-10">
       <div className="mx-auto w-full max-w-4xl">
-        <div className="mb-3 flex items-center justify-between">
-          <TarotBackButton label={backLabel} href="/" />
-          <LanguageSwitcher
-            locale={locale}
-            onChange={setLocale}
-            label={common.language}
-            labels={{ en: common.languageEn, vi: common.languageVi }}
-          />
-        </div>
+        <PageHeader
+          backLabel={backLabel}
+          backHref="/"
+          backClassName="inline-flex items-center gap-2 text-xs font-semibold text-violet-400 transition hover:text-violet-600"
+          backIcon={
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path d="M3 10.5L12 4l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10.5z" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          }
+          locale={locale}
+          onChange={setLocale}
+          label={common.language}
+          labels={{ en: common.languageEn, vi: common.languageVi }}
+        />
 
         <p className="mt-4 text-xs font-semibold uppercase tracking-[0.24em] text-violet-500">
           {tarot.brand}
